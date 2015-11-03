@@ -46,6 +46,10 @@ sub filter {
     if (exists($message->{'@fields'}{epochtime})) {
         $message->{'@timestamp'} = DateTime->from_epoch(epoch => delete($message->{'@fields'}{epochtime})) . ''
     }
+    if (exists($message->{'@fields'}->{'tags'})) {
+        # we move tags here, to keep the loop simpler
+        $message->{'@tags'} = delete $message->{'@fields'}->{tags};
+    }
     foreach my $k (keys %map) {
         my $v = $map{$k};
         $v = [ '', $v ] if !ref $v;
@@ -54,6 +58,10 @@ sub filter {
         if (exists($message->{'@fields'}{$k}) && !exists($message->{$field})) {
             $message->{$field} = $prefix . delete $message->{'@fields'}{$k};
         }
+    }
+    if ($message->{'@tags'} and ref $message->{'@tags'} ne ref []) {
+        # We have something in tags that isn't a ref, lets wrap it
+        $message->{'@tags'} = [ $message->{'@tags'} ];
     }
     $message->{'@tags'} ||= $self->default_tags;
     $message->{'@tags'} = [ uniq @{ $message->{'@tags'} }, @{ $self->add_tags } ];

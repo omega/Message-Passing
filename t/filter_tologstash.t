@@ -42,6 +42,16 @@ my @data = (
         { date => '2012-09-03T21:08:54', message => 'foo',},
         { '@fields' => {}, '@tags' => [], '@message' => 'foo', '@timestamp' => '2012-09-03T21:08:54' },
     ],
+    [
+        'one tag',
+        { tags => 'foo', message => 'foo' },
+        { '@fields' => {}, '@tags' => [ 'foo' ], '@message' => 'foo' },
+    ],
+    [
+        'two tags',
+        { tags => ['foo', 'bar'], message => 'foo' },
+        { '@fields' => {}, '@tags' => [ 'foo', 'bar' ], '@message' => 'foo' },
+    ],
 );
 
 foreach my $datum (@data) {
